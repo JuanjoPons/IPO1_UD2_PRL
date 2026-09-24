@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UD2 PRL – Prevención de Riesgos Laborales</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for PRL & Educational Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        prl: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        hazard: {
+                            50: '#fffbe1',
+                            100: '#fef3c7',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .transition-all-300 { transition: all 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="h-full font-sans text-slate-800 antialiased flex flex-col selection:bg-prl-500 selection:text-white">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="app.navigateTo('welcome')">
+                <div class="w-10 h-10 rounded-lg bg-prl-600 flex items-center justify-center text-white font-bold text-xl shadow">
+                    <i class="fa-solid fa-hard-hat"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight text-slate-100">UD2 · Prevención de Riesgos Laborales</h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">IPE I — Formación Profesional Grado Medio</p>
+                </div>
+            </div>
+
+            <!-- Student info & progress bar badge -->
+            <div id="student-badge" class="hidden flex items-center space-x-4 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700">
+                <div class="flex items-center space-x-2 text-xs sm:text-sm">
+                    <i class="fa-solid fa-user-graduate text-prl-500"></i>
+                    <span id="nav-student-name" class="font-medium text-slate-200 max-w-[120px] sm:max-w-[200px] truncate">Alumno</span>
+                </div>
+                <div class="h-4 w-[1px] bg-slate-700"></div>
+                <div class="text-xs text-slate-300 flex items-center space-x-1">
+                    <span>Progreso:</span>
+                    <span id="nav-progress-text" class="font-bold text-prl-500">0%</span>
+                </div>
+            </div>
+
+            <!-- Quick Nav Menu Buttons -->
+            <div id="nav-actions" class="hidden flex items-center space-x-2">
+                <button onclick="app.navigateTo('session1')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition-all">
+                    Sesión 1
+                </button>
+                <button onclick="app.navigateTo('session2')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition-all">
+                    Sesión 2
+                </button>
+                <button onclick="app.navigateTo('results')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-prl-500 font-semibold transition-all">
+                    <i class="fa-solid fa-chart-line mr-1"></i> Resultados
+                </button>
+            </div>
+        </div>
+
+        <!-- Global Progress Bar -->
+        <div class="w-full bg-slate-800 h-1.5">
+            <div id="global-progress-bar" class="bg-prl-500 h-1.5 w-0 transition-all duration-500"></div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ==================== SCREEN 0: WELCOME & REGISTRATION ==================== -->
+        <section id="view-welcome" class="space-y-8 animate-fade-in">
+            <div class="bg-white rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 max-w-3xl mx-auto text-center space-y-6">
+                <div class="w-20 h-20 bg-prl-100 text-prl-600 rounded-2xl flex items-center justify-center text-4xl mx-auto shadow-inner">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                
+                <div class="space-y-2">
+                    <span class="inline-block px-3 py-1 bg-prl-100 text-prl-800 text-xs font-semibold rounded-full uppercase tracking-wider">Itinerario Personal para la Empleabilidad I (IPE I)</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">UD2 – Prevención de Riesgos Laborales: conceptos básicos</h2>
+                    <p class="text-base sm:text-lg text-slate-600 font-medium">Aprende a identificar riesgos y daños laborales</p>
+                </div>
+
+                <p class="text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">
+                    Bienvenido/a a la plataforma interactiva de PRL. A través de dos sesiones prácticas analizarás casos reales, aprenderás a evaluar tu entorno laboral y comprenderás cómo proteger tu activo más valioso: tu salud.
+                </p>
+
+                <!-- Student Name Form -->
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-left max-w-md mx-auto space-y-4">
+                    <label for="student-name-input" class="block text-sm font-semibold text-slate-700">
+                        <i class="fa-solid fa-user text-prl-600 mr-2"></i>Nombre y Apellidos del alumno/a <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="student-name-input" placeholder="Ej. María García López" 
+                           class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-prl-500 focus:border-prl-500 outline-none text-slate-800 font-medium bg-white transition-all">
+                    <p id="name-error-msg" class="text-xs text-red-600 font-semibold hidden">Por favor, introduce tu nombre y apellidos para continuar.</p>
+                </div>
+
+                <!-- Navigation Hub Options -->
+                <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="app.startCourse('session1')" class="w-full sm:w-auto px-8 py-3.5 bg-prl-600 hover:bg-prl-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center space-x-2 text-base">
+                        <span>Comenzar Sesión 1</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button onclick="app.startCourse('session2')" class="w-full sm:w-auto px-8 py-3.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-2 text-base">
+                        <span>Ir directamente a Sesión 2</span>
+                        <i class="fa-solid fa-forward"></i>
+                    </button>
+                </div>
+
+                <!-- Quick Course Map Preview -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left pt-6 border-t border-slate-100">
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:border-prl-300 transition-all cursor-pointer" onclick="app.startCourse('session1')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-prl-700 uppercase">Sesión 1</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-prl-100 text-prl-800 font-semibold">110 min</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">Salud integral y entorno laboral</h3>
+                        <p class="text-xs text-slate-500 mt-1">Tu cuerpo no es un repuesto. El triángulo de la salud, ODS y los 4 factores de riesgo.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 transition-all cursor-pointer" onclick="app.startCourse('session2')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-slate-700 uppercase">Sesión 2</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-slate-200 text-slate-800 font-semibold">110 min</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">Trabajo, Entorno y Salud</h3>
+                        <p class="text-xs text-slate-500 mt-1">Identificando Causas, Efectos y Daños. Accidentes de trabajo vs Enfermedades profesionales.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 1: SESIÓN 1 ==================== -->
+        <section id="view-session1" class="hidden space-y-8 animate-fade-in">
+            <!-- Header Banner -->
+            <div class="bg-gradient-to-r from-prl-800 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-lg space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="px-3 py-1 bg-prl-500/20 text-prl-300 border border-prl-500/30 text-xs font-bold rounded-full uppercase tracking-wider">
+                        SESIÓN 1 · 110 MIN
+                    </span>
+                    <span class="text-xs text-slate-300 font-medium">RA2 / CA a)</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                    Salud integral y entorno laboral: Tu cuerpo no es un repuesto
+                </h2>
+                
+                <!-- Objectives box -->
+                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 text-xs sm:text-sm space-y-2">
+                    <p class="font-bold text-prl-300 flex items-center">
+                        <i class="fa-solid fa-bullseye mr-2"></i> Objetivos Didácticos Específicos:
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-200">
+                        <li>Comprender la definición multidimensional de salud según la OMS (física, mental y social).</li>
+                        <li>Conceptuar la Salud Laboral como una disciplina preventiva proactiva.</li>
+                        <li>Identificar y clasificar los cuatro grandes grupos de Factores de Riesgo Laboral.</li>
+                    </ul>
+                    <div class="pt-2 border-t border-white/10 text-xs text-slate-300 italic">
+                        <strong>Criterio de Evaluación (RA2 / CA a):</strong> Relacionar las condiciones laborales con la salud de la persona trabajadora para identificar y clasificar los factores de riesgo.
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLOQUE 1: DILEMA INICIAL (CASO CÉSAR) -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-user-clock"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">1. Dilema Inicial · El caso de César</h3>
+                        <p class="text-xs text-slate-500">Mi primer día en el almacén / supermercado</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50/70 border-l-4 border-amber-500 p-4 sm:p-5 rounded-r-xl space-y-3">
+                    <p class="text-sm sm:text-base text-slate-800 leading-relaxed font-medium">
+                        «César (16 años) se incorpora a su primer trabajo. Al terminar su primera jornada llega a casa con un intenso dolor lumbar por mover cajas sin haber recibido formación previa sobre manipulación de cargas, y además se siente profundamente estresado por el ritmo inalcanzable exigido. Sin embargo, César cree que está <strong>"100 % sano"</strong> porque no ha sufrido ningún corte con cúter ni se ha roto ningún hueso.»
+                    </p>
+                </div>
+
+                <!-- Interactive Question -->
+                <div class="space-y-4">
+                    <h4 class="font-bold text-slate-800 text-sm sm:text-base">
+                        Pregunta detonante: ¿Realmente César está sano al 100 %?
+                    </h4>
+                    <div id="cesar-dilemma-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="app.checkCesarDilemma(false)" class="p-4 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all font-medium text-sm hover:bg-slate-50">
+                            a) Sí, porque no tiene heridas graves ni huesos rotos visibles.
+                        </button>
+                        <button onclick="app.checkCesarDilemma(true)" class="p-4 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all font-medium text-sm hover:bg-slate-50">
+                            b) No, porque sufre dolor lumbar (físico) y estrés laboral (mental).
+                        </button>
+                    </div>
+                    <div id="cesar-dilemma-feedback" class="hidden p-4 rounded-xl text-sm leading-relaxed"></div>
+                </div>
+
+                <!-- INTERACTIVE TRIÁNGULO DE LA SALUD -->
+                <div class="mt-8 pt-6 border-t border-slate-100 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-slate-900 text-base">
+                            <i class="fa-solid fa-shapes text-prl-600 mr-2"></i>Actividad Interactiva: El Triángulo de la Salud (OMS)
+                        </h4>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">Clasificación</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-600">
+                        Asigna cada manifestación o síntoma a la dimensión del Triángulo de la Salud correspondiente:
+                    </p>
+
+                    <!-- Draggable / Selectable Items -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Physical Dimension Box -->
+                        <div class="bg-emerald-50/60 border border-emerald-200 rounded-xl p-4 space-y-3">
+                            <div class="flex items-center space-x-2 text-emerald-800 font-bold text-sm">
+                                <i class="fa-solid fa-child-reaching"></i>
+                                <span>Dimensión FÍSICA</span>
+                            </div>
+                            <p class="text-xs text-slate-500">Correcto funcionamiento del organismo.</p>
+                            <div id="drop-physical" class="min-h-[100px] bg-white rounded-lg p-2 border border-dashed border-emerald-300 space-y-2"></div>
+                        </div>
+
+                        <!-- Mental Dimension Box -->
+                        <div class="bg-blue-50/60 border border-blue-200 rounded-xl p-4 space-y-3">
+                            <div class="flex items-center space-x-2 text-blue-800 font-bold text-sm">
+                                <i class="fa-solid fa-brain"></i>
+                                <span>Dimensión MENTAL</span>
+                            </div>
+                            <p class="text-xs text-slate-500">Equilibrio emocional y psicológico.</p>
+                            <div id="drop-mental" class="min-h-[100px] bg-white rounded-lg p-2 border border-dashed border-blue-300 space-y-2"></div>
+                        </div>
+
+                        <!-- Social Dimension Box -->
+                        <div class="bg-purple-50/60 border border-purple-200 rounded-xl p-4 space-y-3">
+                            <div class="flex items-center space-x-2 text-purple-800 font-bold text-sm">
+                                <i class="fa-solid fa-users"></i>
+                                <span>Dimensión SOCIAL</span>
+                            </div>
+                            <p class="text-xs text-slate-500">Relaciones interpersonales y entorno.</p>
+                            <div id="drop-social" class="min-h-[100px] bg-white rounded-lg p-2 border border-dashed border-purple-300 space-y-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Available Cards to Assign -->
+                    <div id="triangle-pool" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-wrap gap-2">
+                        <!-- Items populated via JS -->
+                    </div>
+
+                    <div class="flex justify-end space-x-2 pt-2">
+                        <button onclick="app.resetTriangleActivity()" class="px-4 py-2 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-lg text-xs font-semibold">Reiniciar</button>
+                        <button onclick="app.checkTriangleActivity()" class="px-5 py-2 bg-prl-600 hover:bg-prl-700 text-white rounded-lg text-xs font-bold shadow">Corregir Triángulo</button>
+                    </div>
+                    <div id="triangle-feedback" class="hidden p-4 rounded-xl text-sm"></div>
+                </div>
+            </div>
+
+            <!-- EXPLICACIÓN INTERACTIVA: SALUD LABORAL & ODS -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-prl-100 text-prl-700 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">2. Fundamentos de Salud Laboral y Prevención Proactiva</h3>
+                        <p class="text-xs text-slate-500">Marcos de OIT, OMS y Objetivos de Desarrollo Sostenible</p>
+                    </div>
+                </div>
+
+                <!-- Highlighted Visual Analogy Box -->
+                <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-6 rounded-2xl shadow-md relative overflow-hidden">
+                    <div class="relative z-10 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                        <div class="w-16 h-16 rounded-full bg-amber-500 text-slate-900 flex items-center justify-center text-3xl font-black shrink-0 shadow-lg">
+                            <i class="fa-solid fa-shield-cat"></i>
+                        </div>
+                        <div class="space-y-1 text-center sm:text-left">
+                            <span class="text-xs uppercase font-bold text-amber-400 tracking-wider">PUENTE DE COMPRENSIÓN CLAVE</span>
+                            <blockquote class="text-base sm:text-lg font-bold italic text-white leading-snug">
+                                «El casco o el cinturón de seguridad se usan ANTES de caer o chocar, no después.»
+                            </blockquote>
+                            <p class="text-xs text-slate-300">
+                                La prevención de riesgos laborales es siempre <strong>proactiva</strong>: actúa anticipadamente para evitar que el daño ocurra.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concept Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:shadow-md transition-all">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center text-prl-700">
+                            <i class="fa-solid fa-building-user mr-2"></i>Definición de Salud Laboral (OIT/OMS)
+                        </h4>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Disciplina que trata de la prevención de lesiones y enfermedades relacionadas con el trabajo. Busca adaptar el puesto de trabajo a la persona y controlar los riesgos en el sitio, máquinas y tareas.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:shadow-md transition-all">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center text-blue-700">
+                            <i class="fa-solid fa-earth-americas mr-2"></i>Vinculación con los ODS (Agenda 2030)
+                        </h4>
+                        <ul class="text-xs text-slate-600 mt-2 space-y-1.5">
+                            <li><strong>ODS 3.9:</strong> Reducir sustancialmente muertes y enfermedades producidas por productos químicos peligrosos y contaminación.</li>
+                            <li><strong>ODS 8.8:</strong> Proteger los derechos laborales y promover un entorno de trabajo seguro y sin riesgos para todos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOS CUATRO GRUPOS DE FACTORES DE RIESGO -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">3. Los Cuatro Grupos de Factores de Riesgo Laboral</h3>
+                        <p class="text-xs text-slate-500">Haz clic en cada tarjeta para consultar su definición técnica y ejemplos</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Card 1 -->
+                    <div onclick="app.toggleRiskCard(1)" class="cursor-pointer p-5 rounded-2xl border-2 border-red-200 bg-red-50/40 hover:bg-red-50 hover:border-red-400 transition-all space-y-3 relative group">
+                        <div class="flex items-center justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-red-500 text-white flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <span class="text-xs font-bold text-red-600">01</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm">1. Condiciones de Seguridad</h4>
+                        <p class="text-xs text-slate-600">Peligros materiales del lugar, máquinas y herramientas.</p>
+                        <div id="risk-card-1-detail" class="hidden text-xs text-slate-700 pt-2 border-t border-red-200 space-y-1">
+                            <p><strong>Ejemplos:</strong> Suelos mojados o manchados de aceite, escaleras sin barandilla, máquinas sin carcasa de protección, herramientas defectuosas, instalaciones eléctricas expuestas.</p>
+                        </div>
+                        <span class="text-[10px] text-red-600 font-semibold group-hover:underline block">Haz clic para ver más +</span>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div onclick="app.toggleRiskCard(2)" class="cursor-pointer p-5 rounded-2xl border-2 border-blue-200 bg-blue-50/40 hover:bg-blue-50 hover:border-blue-400 transition-all space-y-3 relative group">
+                        <div class="flex items-center justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-temperature-arrow-up"></i>
+                            </div>
+                            <span class="text-xs font-bold text-blue-600">02</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm">2. Condiciones Medioambientales</h4>
+                        <p class="text-xs text-slate-600">Agentes físicos, químicos o biológicos presentes.</p>
+                        <div id="risk-card-2-detail" class="hidden text-xs text-slate-700 pt-2 border-t border-blue-200 space-y-1">
+                            <p><strong>Ejemplos:</strong> Ruido industrial elevado, temperaturas extremas (calor/frío), polvos de fibra de vidrio, gases, disolventes químicos, virus y bacterias.</p>
+                        </div>
+                        <span class="text-[10px] text-blue-600 font-semibold group-hover:underline block">Haz clic para ver más +</span>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div onclick="app.toggleRiskCard(3)" class="cursor-pointer p-5 rounded-2xl border-2 border-emerald-200 bg-emerald-50/40 hover:bg-emerald-50 hover:border-emerald-400 transition-all space-y-3 relative group">
+                        <div class="flex items-center justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-boxes-packing"></i>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-600">03</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm">3. Factores Ergonómicos</h4>
+                        <p class="text-xs text-slate-600">Derivados de la carga física y esfuerzos del trabajador.</p>
+                        <div id="risk-card-3-detail" class="hidden text-xs text-slate-700 pt-2 border-t border-emerald-200 space-y-1">
+                            <p><strong>Ejemplos:</strong> Levantamiento manual de bidones/cajas pesadas, posturas forzadas sostenidas, movimientos repetitivos en líneas de montaje.</p>
+                        </div>
+                        <span class="text-[10px] text-emerald-600 font-semibold group-hover:underline block">Haz clic para ver más +</span>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div onclick="app.toggleRiskCard(4)" class="cursor-pointer p-5 rounded-2xl border-2 border-purple-200 bg-purple-50/40 hover:bg-purple-50 hover:border-purple-400 transition-all space-y-3 relative group">
+                        <div class="flex items-center justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-purple-500 text-white flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                            <span class="text-xs font-bold text-purple-600">04</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm">4. Factores Psicosociales</h4>
+                        <p class="text-xs text-slate-600">Organización del trabajo, ritmos e interacciones.</p>
+                        <div id="risk-card-4-detail" class="hidden text-xs text-slate-700 pt-2 border-t border-purple-200 space-y-1">
+                            <p><strong>Ejemplos:</strong> Estrés laboral, ritmo inalcanzable sin descansos, trabajo a turnos, gritos, acoso moral (mobbing), mal clima de trabajo.</p>
+                        </div>
+                        <span class="text-[10px] text-purple-600 font-semibold group-hover:underline block">Haz clic para ver más +</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIVIDAD AUDITORÍA EXPRESS -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-prl-600 text-white flex items-center justify-center font-bold text-lg shadow">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-lg">4. Práctica: Auditoría Express en el Taller</h3>
+                            <p class="text-xs text-slate-500">Empresa: Servicios y Mantenimientos Náuticos S.L.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">4 Casos de Evaluación</span>
+                </div>
+
+                <p class="text-xs sm:text-sm text-slate-600">
+                    Inspecciona la empresa e identifica para cada supuesto el <strong>Factor de riesgo</strong>, su <strong>Clasificación oficial</strong> y la <strong>Dimensión de la salud afectada</strong>.
+                </p>
+
+                <!-- Audit Cases Container -->
+                <div id="audit-express-container" class="space-y-6">
+                    <!-- Dynamic rendering via JavaScript -->
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                    <button onclick="app.resetAuditExpress()" class="px-4 py-2 border border-slate-300 hover:bg-slate-100 rounded-xl text-xs font-semibold text-slate-700">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Reiniciar Auditoría
+                    </button>
+                    <button onclick="app.checkAuditExpress()" class="px-6 py-2.5 bg-prl-600 hover:bg-prl-700 text-white font-bold rounded-xl text-sm shadow">
+                        <i class="fa-solid fa-check-double mr-1"></i> Corregir Auditoría Express
+                    </button>
+                </div>
+            </div>
+
+            <!-- REPASO SESIÓN 1 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">5. Actividades de Repaso · Sesión 1</h3>
+                        <p class="text-xs text-slate-500">Casos prácticos, detección de errores y test formativo</p>
+                    </div>
+                </div>
+
+                <!-- Actividad 1: Análisis de caso Martín -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-prl-700 uppercase tracking-wider">Actividad 1 · Análisis de Caso</span>
+                        <span class="text-xs bg-prl-100 text-prl-800 px-2 py-0.5 rounded font-semibold">Caso Martín</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-800 italic bg-white p-3 rounded-lg border border-slate-200">
+                        «Martín trabaja en un taller de montaje donde hay un compresor que emite 90 dB continuos. Aunque no siente dolor físico inmediato, al llegar a casa está irritable, le pitan los oídos y no puede hablar con su familia.»
+                    </p>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700">
+                            ¿Qué tipo de factor de riesgo está presente y qué dimensiones de su salud se están viendo afectadas?
+                        </label>
+                        <textarea id="martin-case-input" rows="3" placeholder="Escribe tu análisis técnico aquí..." 
+                                  class="w-full p-3 text-xs sm:text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-prl-500 outline-none"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="app.checkMartinCase()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs">
+                            Verificar Respuesta y Solución Oficial
+                        </button>
+                    </div>
+                    <div id="martin-case-solution" class="hidden p-4 rounded-xl text-xs sm:text-sm space-y-2 leading-relaxed"></div>
+                </div>
+
+                <!-- Actividad 2: Encuentra el error -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-amber-700 uppercase tracking-wider">Actividad 2 · Encuentra el Error</span>
+                        <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-semibold">Detección Conceptual</span>
+                    </div>
+                    <div class="p-3 bg-white border border-slate-200 rounded-lg text-xs sm:text-sm text-slate-800 font-medium">
+                        «La salud laboral se define únicamente como la ausencia de enfermedades o lesiones físicas en el trabajador. Por ello, la prevención de riesgos laborales consiste en actuar inmediatamente después de que ocurre un accidente para sancionar al culpable.»
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700">Selecciona el error principal contenido en la afirmación anterior:</label>
+                        <div id="find-error-s1-options" class="space-y-2 text-xs sm:text-sm">
+                            <label class="flex items-start space-x-2 p-2 bg-white rounded border border-slate-200 hover:bg-slate-100 cursor-pointer">
+                                <input type="radio" name="error-s1" value="a" class="mt-0.5">
+                                <span>a) Reducir la salud solo a ausencia de enfermedad física y afirmar que la prevención actúa después del accidente.</span>
+                            </label>
+                            <label class="flex items-start space-x-2 p-2 bg-white rounded border border-slate-200 hover:bg-slate-100 cursor-pointer">
+                                <input type="radio" name="error-s1" value="b" class="mt-0.5">
+                                <span>b) Que la sanción al culpable la debe imponer el inspector del ministerio.</span>
+                            </label>
+                            <label class="flex items-start space-x-2 p-2 bg-white rounded border border-slate-200 hover:bg-slate-100 cursor-pointer">
+                                <input type="radio" name="error-s1" value="c" class="mt-0.5">
+                                <span>c) Afirmar que el trabajador no tiene ninguna responsabilidad en prevención.</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="app.checkErrorS1()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs">
+                            Corregir Detección de Error
+                        </button>
+                    </div>
+                    <div id="error-s1-feedback" class="hidden p-4 rounded-xl text-xs sm:text-sm space-y-1"></div>
+                </div>
+
+                <!-- Actividad 3: Test Sesión 1 -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">Actividad 3 · Test de Opción Múltiple</span>
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-semibold">3 Preguntas Evaluables</span>
+                    </div>
+
+                    <div id="test-s1-container" class="space-y-6">
+                        <!-- Rendered via JS -->
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button onclick="app.checkTestS1()" class="px-6 py-2.5 bg-prl-600 hover:bg-prl-700 text-white font-bold rounded-xl text-sm shadow">
+                            Corregir Test Sesión 1
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CIERRE SESIÓN 1 - EXIT TICKET -->
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 sm:p-8 shadow-lg space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-prl-500 text-slate-900 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-lg">6. Exit Ticket · Cierre de la Sesión 1</h3>
+                            <p class="text-xs text-slate-400">Síntesis conceptual: Causa (Factor de Riesgo) ≠ Efecto (Daño)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4 text-xs sm:text-sm">
+                    <p class="text-slate-300">
+                        Clasifica correctamente cada elemento como <strong>Causa (Factor de Riesgo)</strong> o <strong>Efecto (Daño Laboral)</strong>:
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="exit-ticket-s1-grid">
+                        <!-- Dynamic items -->
+                    </div>
+
+                    <div class="flex justify-end pt-4">
+                        <button onclick="app.checkExitTicketS1()" class="px-6 py-2.5 bg-prl-500 hover:bg-prl-400 text-slate-950 font-extrabold rounded-xl text-sm shadow">
+                            Comprobar Exit Ticket y Guardar Progreso
+                        </button>
+                    </div>
+                    <div id="exit-ticket-s1-feedback" class="hidden p-4 rounded-xl text-slate-900 text-xs sm:text-sm font-medium"></div>
+                </div>
+
+                <!-- Session Navigation Footer -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-700">
+                    <button onclick="app.navigateTo('welcome')" class="text-xs text-slate-400 hover:text-white font-medium">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Ir al Inicio
+                    </button>
+                    <button onclick="app.navigateTo('session2')" class="px-6 py-2.5 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl text-xs sm:text-sm shadow flex items-center space-x-2">
+                        <span>Continuar a Sesión 2</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 2: SESIÓN 2 ==================== -->
+        <section id="view-session2" class="hidden space-y-8 animate-fade-in">
+            <!-- Header Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-lg space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-bold rounded-full uppercase tracking-wider">
+                        SESIÓN 2 · 110 MIN
+                    </span>
+                    <span class="text-xs text-slate-300 font-medium">RA2 / CA a) y CA g)</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                    Trabajo, Entorno y Salud: Identificando Causas, Efectos y Daños
+                </h2>
+                
+                <!-- Objectives box -->
+                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 text-xs sm:text-sm space-y-2">
+                    <p class="font-bold text-indigo-300 flex items-center">
+                        <i class="fa-solid fa-bullseye mr-2"></i> Objetivos Didácticos Específicos:
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-200">
+                        <li>Analizar la relación ambivalente entre trabajo y salud.</li>
+                        <li>Definir el concepto legal de Condición de Trabajo.</li>
+                        <li>Diferenciar patologías específicas (Accidente de Trabajo y Enfermedad Profesional) e inespecíficas.</li>
+                    </ul>
+                    <div class="pt-2 border-t border-white/10 text-xs text-slate-300 italic">
+                        <strong>Criterios de Evaluación:</strong> CA a) Clasificar factores de riesgo y daños | CA g) Clasificar y describir los tipos de daños profesionales.
+                    </div>
+                </div>
+            </div>
+
+            <!-- DILEMA INICIAL: DOS CASOS CONTRAPUESTOS -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">1. Dilema Inicial · Dos Casos Contrapuestos</h3>
+                        <p class="text-xs text-slate-500">Comparativa temporal del daño en la salud laboral</p>
+                    </div>
+                </div>
+
+                <!-- Cases Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-5 rounded-2xl border-2 border-red-200 bg-red-50/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded bg-red-200 text-red-800 text-xs font-bold uppercase">Caso A</span>
+                            <i class="fa-solid fa-bolt text-red-600"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm">Corte Profundo en Mano</h4>
+                        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            Un técnico sufre un corte profundo en la mano tras engancharse con una amoladora que no tenía colocada la carcasa de protección.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl border-2 border-amber-200 bg-amber-50/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded bg-amber-200 text-amber-800 text-xs font-bold uppercase">Caso B</span>
+                            <i class="fa-solid fa-hourglass-half text-amber-600"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm">Pérdida Auditiva Irreversible</h4>
+                        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            Una técnica es diagnosticada de hipoacusia (sordera) irreversible tras llevar 8 años expuesta diariamente a ruido de motores sin protección auditiva.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Trigger Question -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                    <h4 class="font-bold text-slate-900 text-sm sm:text-base">
+                        Pregunta detonante: ¿Ambos sucesos son lo mismo? ¿Cuál es instantáneo y cuál ha tardado años en dar la cara?
+                    </h4>
+                    <div id="dilemma-s2-options" class="space-y-2 text-xs sm:text-sm">
+                        <!-- Options populated via JS -->
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="app.checkDilemmaS2()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs shadow">
+                            Validar Clasificación Inicial
+                        </button>
+                    </div>
+                    <div id="dilemma-s2-feedback" class="hidden p-4 rounded-xl text-xs sm:text-sm leading-relaxed"></div>
+                </div>
+            </div>
+
+            <!-- CONDICIONES DE TRABAJO -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-gears"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">2. El Concepto Legal de «Condición de Trabajo»</h3>
+                        <p class="text-xs text-slate-500">Definición amplia según la LPRL</p>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-50/70 border-l-4 border-indigo-600 p-4 rounded-r-xl text-xs sm:text-sm text-slate-800 leading-relaxed">
+                    <strong>Condición de Trabajo:</strong> Cualquier característica de la tarea que pueda tener una influencia significativa en la generación de riesgos para la seguridad y la salud de la persona trabajadora.
+                </div>
+
+                <!-- Variables Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-building text-indigo-600 text-lg mb-1 block"></i>
+                        <span class="font-bold text-xs text-slate-800">Locales</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-screwdriver-wrench text-indigo-600 text-lg mb-1 block"></i>
+                        <span class="font-bold text-xs text-slate-800">Equipos</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-vial text-indigo-600 text-lg mb-1 block"></i>
+                        <span class="font-bold text-xs text-slate-800">Agentes</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-clipboard-list text-indigo-600 text-lg mb-1 block"></i>
+                        <span class="font-bold text-xs text-slate-800">Procedimientos</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 col-span-2 sm:col-span-1">
+                        <i class="fa-solid fa-sitemap text-indigo-600 text-lg mb-1 block"></i>
+                        <span class="font-bold text-xs text-slate-800">Organización</span>
+                    </div>
+                </div>
+
+                <!-- Relation Chain -->
+                <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-around gap-3 text-center">
+                    <div class="bg-slate-800 px-4 py-2 rounded-xl border border-slate-700">
+                        <span class="text-xs text-indigo-400 font-bold block">01. ORIGEN</span>
+                        <span class="text-sm font-bold">Condición de Trabajo</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-prl-500 hidden sm:block text-lg"></i>
+                    <i class="fa-solid fa-arrow-down text-prl-500 sm:hidden"></i>
+                    <div class="bg-slate-800 px-4 py-2 rounded-xl border border-slate-700">
+                        <span class="text-xs text-amber-400 font-bold block">02. CAUSA</span>
+                        <span class="text-sm font-bold">Factor de Riesgo</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-prl-500 hidden sm:block text-lg"></i>
+                    <i class="fa-solid fa-arrow-down text-prl-500 sm:hidden"></i>
+                    <div class="bg-slate-800 px-4 py-2 rounded-xl border border-slate-700">
+                        <span class="text-xs text-red-400 font-bold block">03. EFECTO</span>
+                        <span class="text-sm font-bold">Daño Laboral</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÁRBOL INTERACTIVO DE DAÑOS PROFESIONALES -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-sitemap"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">3. Árbol de Daños Profesionales</h3>
+                        <p class="text-xs text-slate-500">Haz clic en cada categoría para explorar su definición y condiciones</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Specific Pathologies -->
+                    <div class="border-2 border-red-200 rounded-2xl p-5 space-y-4 bg-red-50/30">
+                        <div class="flex items-center space-x-2 border-b border-red-200 pb-2">
+                            <i class="fa-solid fa-bullseye text-red-600 text-lg"></i>
+                            <h4 class="font-bold text-red-900 text-base">PATOLOGÍAS ESPECÍFICAS</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Relación causa-efecto directa y exclusiva con el trabajo.</p>
+
+                        <div class="space-y-3">
+                            <div onclick="app.showDamageDetail('accidente')" class="cursor-pointer p-3 bg-white rounded-xl border border-red-200 hover:border-red-400 transition-all space-y-1">
+                                <span class="text-xs font-bold text-red-700 uppercase flex items-center">
+                                    <i class="fa-solid fa-kit-medical mr-1.5"></i> Accidente de Trabajo
+                                </span>
+                                <p class="text-xs text-slate-600">Suceso súbito, imprevisto y con lesión corporal con motivo u ocasión del trabajo.</p>
+                            </div>
+
+                            <div onclick="app.showDamageDetail('enfermedad')" class="cursor-pointer p-3 bg-white rounded-xl border border-red-200 hover:border-red-400 transition-all space-y-1">
+                                <span class="text-xs font-bold text-red-700 uppercase flex items-center">
+                                    <i class="fa-solid fa-notes-medical mr-1.5"></i> Enfermedad Profesional
+                                </span>
+                                <p class="text-xs text-slate-600">Proceso lento y paulatino por exposición continuada. Inclusión en el cuadro oficial (RD 1299/2006).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Non-Specific Pathologies -->
+                    <div class="border-2 border-amber-200 rounded-2xl p-5 space-y-4 bg-amber-50/30">
+                        <div class="flex items-center space-x-2 border-b border-amber-200 pb-2">
+                            <i class="fa-solid fa-circle-nodes text-amber-600 text-lg"></i>
+                            <h4 class="font-bold text-amber-900 text-base">PATOLOGÍAS INESPECÍFICAS</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Influyen factores laborales y extralaborales / personales.</p>
+
+                        <div class="space-y-3">
+                            <div onclick="app.showDamageDetail('fatiga')" class="cursor-pointer p-3 bg-white rounded-xl border border-amber-200 hover:border-amber-400 transition-all space-y-1">
+                                <span class="text-xs font-bold text-amber-800 uppercase flex items-center">
+                                    <i class="fa-solid fa-battery-quarter mr-1.5"></i> Fatiga Física / Mental
+                                </span>
+                                <p class="text-xs text-slate-600">Disminución de la capacidad funcional por sobreesfuerzo o saturación informativa.</p>
+                            </div>
+
+                            <div onclick="app.showDamageDetail('estres')" class="cursor-pointer p-3 bg-white rounded-xl border border-amber-200 hover:border-amber-400 transition-all space-y-1">
+                                <span class="text-xs font-bold text-amber-800 uppercase flex items-center">
+                                    <i class="fa-solid fa-head-side-virus mr-1.5"></i> Estrés
+                                </span>
+                                <p class="text-xs text-slate-600">Respuesta a exigencias laborales que superan los recursos de la persona.</p>
+                            </div>
+
+                            <div onclick="app.showDamageDetail('insatisfaccion')" class="cursor-pointer p-3 bg-white rounded-xl border border-amber-200 hover:border-amber-400 transition-all space-y-1">
+                                <span class="text-xs font-bold text-amber-800 uppercase flex items-center">
+                                    <i class="fa-solid fa-face-frown mr-1.5"></i> Insatisfacción Laboral
+                                </span>
+                                <p class="text-xs text-slate-600">Apatía y malestar por falta de expectativas u organización deficiente.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="damage-detail-modal" class="hidden p-4 rounded-xl bg-slate-900 text-white text-xs sm:text-sm leading-relaxed space-y-2"></div>
+            </div>
+
+            <!-- ACTIVIDAD TRIBUNAL DE PERITAJE PREVENTIVO -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-700 text-white flex items-center justify-center font-bold text-lg shadow">
+                            <i class="fa-solid fa-gavel"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-lg">4. Tribunal de Peritaje Preventivo</h3>
+                            <p class="text-xs text-slate-500">Dictamina la patología y condición fallida en los 4 expedientes</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-bold rounded-full">4 Expedientes</span>
+                </div>
+
+                <div id="tribunal-container" class="space-y-6">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                    <button onclick="app.resetTribunal()" class="px-4 py-2 border border-slate-300 hover:bg-slate-100 rounded-xl text-xs font-semibold text-slate-700">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Reiniciar Expedientes
+                    </button>
+                    <button onclick="app.checkTribunal()" class="px-6 py-2.5 bg-indigo-700 hover:bg-indigo-800 text-white font-bold rounded-xl text-sm shadow">
+                        <i class="fa-solid fa-gavel mr-1"></i> Dictaminar Veredicto del Tribunal
+                    </button>
+                </div>
+            </div>
+
+            <!-- REPASO SESIÓN 2 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">5. Actividades de Repaso · Sesión 2</h3>
+                        <p class="text-xs text-slate-500">Análisis de caso, detección de error y test de 3 preguntas</p>
+                    </div>
+                </div>
+
+                <!-- Actividad 1: Caso Pintor Industrial -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-indigo-700 uppercase tracking-wider">Actividad 1 · Análisis de Caso</span>
+                        <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-semibold">Asma Ocupacional</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-800 italic bg-white p-3 rounded-lg border border-slate-200">
+                        «Un pintor industrial que utiliza pistolas de lacado pulverizado sin mascarilla empieza a sufrir problemas respiratorios graves (asma ocupacional) tras cinco años en la empresa.»
+                    </p>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700">
+                            ¿Se trata de un Accidente de Trabajo o una Enfermedad Profesional? Justifica tu respuesta.
+                        </label>
+                        <textarea id="painter-case-input" rows="3" placeholder="Escribe tu calificación técnica y justificación..." 
+                                  class="w-full p-3 text-xs sm:text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="app.checkPainterCase()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs">
+                            Verificar Respuesta y Solución Oficial
+                        </button>
+                    </div>
+                    <div id="painter-case-solution" class="hidden p-4 rounded-xl text-xs sm:text-sm space-y-2 leading-relaxed"></div>
+                </div>
+
+                <!-- Actividad 2: Encuentra el error S2 -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-amber-700 uppercase tracking-wider">Actividad 2 · Encuentra el Error</span>
+                        <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-semibold">Definiciones Invertidas</span>
+                    </div>
+                    <div class="p-3 bg-white border border-slate-200 rounded-lg text-xs sm:text-sm text-slate-800 font-medium">
+                        «Un accidente de trabajo es un deterioro lento e imperceptible de la salud producido por la exposición continuada a un contaminante, mientras que la enfermedad profesional es cualquier lesión repentina e instantánea que ocurre mientras el trabajador está en su casa descansando.»
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700">Identifica el error fundamental de la frase:</label>
+                        <div id="find-error-s2-options" class="space-y-2 text-xs sm:text-sm">
+                            <label class="flex items-start space-x-2 p-2 bg-white rounded border border-slate-200 hover:bg-slate-100 cursor-pointer">
+                                <input type="radio" name="error-s2" value="a" class="mt-0.5">
+                                <span>a) Las definiciones están totalmente invertidas y además el accidente ocurre en el trabajo o in itinere, no descansando en casa.</span>
+                            </label>
+                            <label class="flex items-start space-x-2 p-2 bg-white rounded border border-slate-200 hover:bg-slate-100 cursor-pointer">
+                                <input type="radio" name="error-s2" value="b" class="mt-0.5">
+                                <span>b) Que el accidente de trabajo no causa lesiones físicas.</span>
+                            </label>
+                            <label class="flex items-start space-x-2 p-2 bg-white rounded border border-slate-200 hover:bg-slate-100 cursor-pointer">
+                                <input type="radio" name="error-s2" value="c" class="mt-0.5">
+                                <span>c) Que los contaminantes solo producen fatiga física.</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="app.checkErrorS2()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs">
+                            Corregir Detección de Error
+                        </button>
+                    </div>
+                    <div id="error-s2-feedback" class="hidden p-4 rounded-xl text-xs sm:text-sm space-y-1"></div>
+                </div>
+
+                <!-- Actividad 3: Test Sesión 2 -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-indigo-700 uppercase tracking-wider">Actividad 3 · Test de Opción Múltiple</span>
+                        <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-semibold">3 Preguntas Evaluables</span>
+                    </div>
+
+                    <div id="test-s2-container" class="space-y-6">
+                        <!-- Rendered via JS -->
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button onclick="app.checkTestS2()" class="px-6 py-2.5 bg-indigo-700 hover:bg-indigo-800 text-white font-bold rounded-xl text-sm shadow">
+                            Corregir Test Sesión 2
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Navigation Footer -->
+            <div class="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <button onclick="app.navigateTo('session1')" class="px-5 py-2.5 border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs sm:text-sm flex items-center space-x-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Volver a Sesión 1</span>
+                </button>
+                <button onclick="app.navigateTo('results')" class="px-6 py-2.5 bg-prl-600 hover:bg-prl-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow flex items-center space-x-2">
+                    <span>Ver Evaluaciones y Informe Final</span>
+                    <i class="fa-solid fa-square-poll-vertical"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 3: EVALUACIÓN GLOBAL & RESULTADOS ==================== -->
+        <section id="view-results" class="hidden space-y-8 animate-fade-in">
+            <div class="bg-white rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 space-y-8">
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-6">
+                    <div>
+                        <span class="px-3 py-1 bg-prl-100 text-prl-800 text-xs font-bold rounded-full uppercase tracking-wider">Informe de Calificación</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Resultados Globales de Evaluación</h2>
+                        <p class="text-xs sm:text-sm text-slate-500">Unidad Didáctica 2 · Prevención de Riesgos Laborales</p>
+                    </div>
+                    <div class="text-right bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <span class="text-xs text-slate-500 font-medium block">Fecha de Realización</span>
+                        <span id="report-date" class="text-xs font-bold text-slate-800">--/--/----</span>
+                    </div>
+                </div>
+
+                <!-- Student & Score Summary Box -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Student Details -->
+                    <div class="p-6 rounded-2xl bg-slate-900 text-white space-y-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Alumno / Alumna</span>
+                            <h3 id="report-student-name" class="text-xl font-extrabold text-white mt-1">--</h3>
+                            <p class="text-xs text-prl-400 mt-2"><i class="fa-solid fa-graduation-cap mr-1"></i> FP Grado Medio · IPE I</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800 text-xs text-slate-400 space-y-1">
+                            <p><strong>Unidad:</strong> UD2 PRL Conceptos Básicos</p>
+                            <p><strong>Estado:</strong> <span id="report-status-badge" class="font-bold text-prl-400">En Curso</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Global Grade Box -->
+                    <div class="p-6 rounded-2xl bg-gradient-to-br from-prl-600 to-prl-800 text-white flex flex-col items-center justify-center text-center space-y-2 shadow-lg">
+                        <span class="text-xs text-prl-100 uppercase font-bold tracking-widest">CALIFICACIÓN GLOBAL</span>
+                        <div id="report-global-score" class="text-5xl font-black">0.0</div>
+                        <span class="text-xs bg-white/20 px-3 py-1 rounded-full text-white font-semibold">sobre 10 puntos</span>
+                    </div>
+
+                    <!-- Activities Counter -->
+                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-center space-y-3">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Resumen de Actividades</span>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-600">Actividades Completadas:</span>
+                            <span id="report-activities-completed" class="font-bold text-slate-900">0 / 8</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                            <div id="report-progress-bar" class="bg-prl-600 h-full w-0 transition-all duration-500"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs pt-2">
+                            <span class="text-slate-600">Aciertos Totales:</span>
+                            <span id="report-total-hits" class="font-bold text-emerald-600">0</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-600">Errores Totales:</span>
+                            <span id="report-total-errors" class="font-bold text-red-600">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Breakdown Table -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-900 text-base">Desglose por Sesión y Bloque Didáctico</h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-xs sm:text-sm text-left text-slate-700">
+                            <thead class="bg-slate-100 text-slate-800 uppercase text-[11px] font-bold">
+                                <tr>
+                                    <th class="p-3">Bloque / Actividad</th>
+                                    <th class="p-3">Sesión</th>
+                                    <th class="p-3 text-center">Aciertos</th>
+                                    <th class="p-3 text-center">Errores</th>
+                                    <th class="p-3 text-right">Puntuación</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-table-body" class="divide-y divide-slate-200 bg-white">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Action Bar & Email Submission -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-center sm:text-left">
+                        <h4 class="font-bold text-slate-900 text-sm">¿Has finalizado tu trabajo?</h4>
+                        <p class="text-xs text-slate-500">Envía los resultados a tu profesor/a directamente para registrar tu calificación.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-3 w-full sm:w-auto">
+                        <button onclick="window.print()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl text-xs transition-all">
+                            <i class="fa-solid fa-print mr-1"></i> Imprimir / PDF
+                        </button>
+                        <button onclick="app.sendResultsByEmail()" class="px-6 py-2.5 bg-prl-600 hover:bg-prl-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Enviar resultados al profesor</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /**
+         * UD2 PRL Web Application Core Engine
+         * Preserves exact contents, solutions and exercises from official guide "UD2 Sesión 1 - 4.md"
+         */
+
+        const APP_DATA = {
+            // Data for Triángulo de la Salud
+            triangleItems: [
+                { id: 't1', text: 'Ausencia de dolor lumbar o muscular', cat: 'physical' },
+                { id: 't2', text: 'Estrés laboral y ansiedad', cat: 'mental' },
+                { id: 't3', text: 'Aislamiento e irritabilidad familiar', cat: 'social' },
+                { id: 't4', text: 'Integridad física y auditiva', cat: 'physical' },
+                { id: 't5', text: 'Equilibrio emocional y motivación', cat: 'mental' },
+                { id: 't6', text: 'Buen clima y relaciones entre compañeros', cat: 'social' }
+            ],
+
+            // Auditoría Express Cases
+            auditCases: [
+                {
+                    id: 'A',
+                    title: 'Caso A: Suelo con manchas de aceite',
+                    desc: 'Un suelo con manchas de aceite cerca de la bancada del taller.',
+                    correctFactor: 'Condición de seguridad',
+                    correctDim: 'Física',
+                    explicacion: 'Los suelos mojados o con sustancias deslizantes representan una condición material del lugar de trabajo que puede originar caídas al mismo nivel (daño físico).'
+                },
+                {
+                    id: 'B',
+                    title: 'Caso B: Lijado de fibra de vidrio',
+                    desc: 'Trabajador lijando fibra de vidrio a 32 °C sin mascarilla, extractor ni gafas.',
+                    correctFactor: 'Condición medioambiental',
+                    correctDim: 'Física',
+                    explicacion: 'El polvo de fibra de vidrio (agente químico) y los 32 °C (agente físico: temperatura) amenazan la salud física (aparato respiratorio y vista).'
+                },
+                {
+                    id: 'C',
+                    title: 'Caso C: Carretilla rota y bidones de 30 kg',
+                    desc: 'Carretilla manual rota que obliga a levantar manualmente bidones de 30 kg.',
+                    correctFactor: 'Factor ergonómico',
+                    correctDim: 'Física',
+                    explicacion: 'El sobreesfuerzo y manipulación manual de cargas superiores a los límites recomendados es un factor ergonómico que provoca lesiones musculares o lumbares.'
+                },
+                {
+                    id: 'D',
+                    title: 'Caso D: Encargado con gritos y ritmos inalcanzables',
+                    desc: 'Encargado que grita a los novatos e impone ritmos inalcanzables sin descansos.',
+                    correctFactor: 'Factor psicosocial',
+                    correctDim: 'Mental y Social',
+                    explicacion: 'La mala organización, presión de tiempos y trato hostil destruyen la salud mental (estrés, ansiedad) y social (mal clima laboral).'
+                }
+            ],
+
+            // Test Sesión 1
+            testS1: [
+                {
+                    q: '1. Según la definición de la OMS, la salud es:',
+                    options: [
+                        'a) La ausencia total de bajas médicas en la empresa.',
+                        'b) Un estado completo de bienestar físico, mental y social, y no solo la ausencia de afecciones o enfermedades.',
+                        'c) La capacidad física de aguantar jornadas laborales superiores a 8 horas.',
+                        'd) El cumplimiento estricto de las órdenes del empresario.'
+                    ],
+                    correct: 1,
+                    exp: 'Corresponde literalmente a la definición multidimensional oficial de la OMS integrada en la normativa preventiva.'
+                },
+                {
+                    q: '2. Un suelo mojado con aceite sobre el que un trabajador puede resbalar se clasifica como:',
+                    options: [
+                        'a) Un factor de riesgo psicosocial.',
+                        'b) Una condición ergonómica.',
+                        'c) Una condición de seguridad.',
+                        'd) Una patología específica.'
+                    ],
+                    correct: 2,
+                    exp: 'Los elementos materiales del lugar de trabajo (suelos, instalaciones, máquinas) pertenecen al grupo de condiciones de seguridad.'
+                },
+                {
+                    q: '3. La diferencia clave entre un "Factor de Riesgo" y un "Daño Laboral" es que:',
+                    options: [
+                        'a) El factor de riesgo es la causa o elemento peligroso, mientras que el daño es la consecuencia o lesión en la salud.',
+                        'b) El factor de riesgo es siempre económico y el daño es siempre físico.',
+                        'c) No hay diferencia, ambos términos son sinónimos legales.',
+                        'd) El daño ocurre antes que el factor de riesgo.'
+                    ],
+                    correct: 0,
+                    exp: 'El factor de riesgo representa la causa o condición inadecuada, y el daño es el efecto o patología producida en la persona.'
+                }
+            ],
+
+            // Exit Ticket Items
+            exitTicketS1: [
+                { id: 'et1', text: 'Suelo con manchas de aceite', type: 'causa' },
+                { id: 'et2', text: 'Fractura de muñeca por caída', type: 'efecto' },
+                { id: 'et3', text: 'Ruido de 90 dB continuos', type: 'causa' },
+                { id: 'et4', text: 'Pérdida auditiva (hipoacusia)', type: 'efecto' }
+            ],
+
+            // Tribunal Expedientes
+            tribunalExpedientes: [
+                {
+                    id: 1,
+                    title: 'Expediente 1: Lucía',
+                    desc: 'Lucía tropieza con un cable atravesado en el pasillo del taller, cae al suelo y se fractura la muñeca.',
+                    correctCond: 'Equipos / Instalaciones (Seguridad)',
+                    correctType: 'Accidente de trabajo',
+                    refAnswer: 'Es un Accidente de Trabajo (patología específica): suceso súbito, imprevisto, con lesión corporal ocurrido con motivo u ocasión del trabajo por una falla en la condición de seguridad (cable atravesado).'
+                },
+                {
+                    id: 2,
+                    title: 'Expediente 2: Jorge',
+                    desc: 'Jorge padece dermatitis (irritación grave en la piel) tras manipular disolventes de pintura de barcos durante 3 años sin guantes.',
+                    correctCond: 'Agentes Químicos / Ausencia de EPIs',
+                    correctType: 'Enfermedad profesional',
+                    refAnswer: 'Es una Enfermedad Profesional: proceso lento y paulatino por exposición continuada a un agente químico (disolventes) recogido en el cuadro oficial.'
+                },
+                {
+                    id: 3,
+                    title: 'Expediente 3: Laura',
+                    desc: 'Laura siente apatía, desmotivación y tristeza porque sus expectativas sobre el horario de trabajo no se cumplen y la organización es desastrosa.',
+                    correctCond: 'Organización del trabajo',
+                    correctType: 'Insatisfacción laboral / Estrés',
+                    refAnswer: 'Es una Patología Inespecífica (Insatisfacción laboral / Estrés): derivada de condiciones deficientes de organización e influida por factores psicológicos.'
+                },
+                {
+                    id: 4,
+                    title: 'Expediente 4: Andrés',
+                    desc: 'Andrés sufre una sobrecarga muscular en las cervicales al terminar una jornada de 10 horas montando cuadros eléctricos en posturas forzadas.',
+                    correctCond: 'Carga de trabajo / Procedimientos',
+                    correctType: 'Fatiga física',
+                    refAnswer: 'Es una Patología Inespecífica (Fatiga física por carga de trabajo): provocada por sobreesfuerzo y posturas forzadas sostenidas durante jornada prolongada.'
+                }
+            ],
+
+            // Test Sesión 2
+            testS2: [
+                {
+                    q: '1. Se define como "Condición de Trabajo":',
+                    options: [
+                        'a) Exclusivamente el salario neto que percibe el trabajador a fin de mes.',
+                        'b) Cualquier característica del trabajo (locales, equipos, agentes, procedimientos y organización) que pueda influir en la generación de riesgos.',
+                        'c) El estado del tiempo y el clima atmosférico fuera del edificio.',
+                        'd) La titulación académica previa que aporta el empleado.'
+                    ],
+                    correct: 1,
+                    exp: 'La condición de trabajo abarca de forma amplia todos los aspectos del entorno, medios técnicos y organización de la tarea que influyen en la salud.'
+                },
+                {
+                    q: '2. La fatiga física o mental y la insatisfacción laboral se clasifican normativamente como:',
+                    options: [
+                        'a) Patologías específicas del trabajo.',
+                        'b) Incidentes de blanco.',
+                        'c) Patologías inespecíficas del trabajo.',
+                        'd) Delitos laborales graves.'
+                    ],
+                    correct: 2,
+                    exp: 'Son patologías inespecíficas porque, aunque el trabajo influye en su aparición, también intervienen factores extralaborales o personales.'
+                },
+                {
+                    q: '3. Para que un daño sea considerado legalmente como Enfermedad Profesional en España se requiere que:',
+                    options: [
+                        'a) Ocurra en un segundo tras un impacto brusco.',
+                        'b) Esté provocada por el trabajo y la sustancia o actividad figure recogida en el cuadro oficial de Enfermedades Profesionales (RD 1299/2006).',
+                        'c) El trabajador lo decida unilateralmente sin supervisión médica.',
+                        'd) Haya habido mala fe o imprudencia por parte del trabajador.'
+                    ],
+                    correct: 1,
+                    exp: 'El sistema español exige que la enfermedad esté provocada por el trabajo y la actividad o agente figure tipificado en el cuadro oficial del RD 1299/2006.'
+                }
+            ]
+        };
+
+        // State store
+        const state = {
+            studentName: '',
+            currentView: 'welcome',
+            scores: {
+                cesarDilemma: null,
+                triangle: null,
+                auditExpress: null,
+                martinCase: null,
+                errorS1: null,
+                testS1: null,
+                exitTicketS1: null,
+                dilemmaS2: null,
+                tribunal: null,
+                painterCase: null,
+                errorS2: null,
+                testS2: null
+            },
+            triangleAssignments: {}
+        };
+
+        class PRLApp {
+            constructor() {
+                this.initApp();
+            }
+
+            initApp() {
+                this.renderTrianglePool();
+                this.renderAuditCases();
+                this.renderTestS1();
+                this.renderExitTicketS1();
+                this.renderDilemmaS2();
+                this.renderTribunal();
+                this.renderTestS2();
+                this.updateDate();
+            }
+
+            updateDate() {
+                const now = new Date();
+                document.getElementById('report-date').innerText = now.toLocaleDateString('es-ES', {
+                    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+            }
+
+            startCourse(targetView) {
+                const nameInput = document.getElementById('student-name-input').value.trim();
+                const errorMsg = document.getElementById('name-error-msg');
+
+                if (!nameInput && !state.studentName) {
+                    errorMsg.classList.remove('hidden');
+                    return;
+                }
+
+                errorMsg.classList.add('hidden');
+                if (nameInput) state.studentName = nameInput;
+
+                // Update UI elements
+                document.getElementById('nav-student-name').innerText = state.studentName;
+                document.getElementById('report-student-name').innerText = state.studentName;
+                document.getElementById('student-badge').classList.remove('hidden');
+                document.getElementById('student-badge').classList.add('flex');
+                document.getElementById('nav-actions').classList.remove('hidden');
+                document.getElementById('nav-actions').classList.add('flex');
+
+                this.navigateTo(targetView);
+            }
+
+            navigateTo(viewId) {
+                const views = ['welcome', 'session1', 'session2', 'results'];
+                views.forEach(v => {
+                    const el = document.getElementById(`view-${v}`);
+                    if (el) el.classList.add('hidden');
+                });
+
+                const targetEl = document.getElementById(`view-${viewId}`);
+                if (targetEl) {
+                    targetEl.classList.remove('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+
+                state.currentView = viewId;
+                this.updateProgressBar();
+                if (viewId === 'results') this.calculateFinalResults();
+            }
+
+            updateProgressBar() {
+                let completedCount = 0;
+                const totalActivities = 8; // Major evaluated checkpoints
+
+                if (state.scores.cesarDilemma !== null) completedCount++;
+                if (state.scores.triangle !== null) completedCount++;
+                if (state.scores.auditExpress !== null) completedCount++;
+                if (state.scores.testS1 !== null) completedCount++;
+                if (state.scores.exitTicketS1 !== null) completedCount++;
+                if (state.scores.dilemmaS2 !== null) completedCount++;
+                if (state.scores.tribunal !== null) completedCount++;
+                if (state.scores.testS2 !== null) completedCount++;
+
+                const percentage = Math.round((completedCount / totalActivities) * 100);
+                document.getElementById('global-progress-bar').style.width = `${percentage}%`;
+                document.getElementById('nav-progress-text').innerText = `${percentage}%`;
+                document.getElementById('report-progress-bar').style.width = `${percentage}%`;
+                document.getElementById('report-activities-completed').innerText = `${completedCount} / ${totalActivities}`;
+            }
+
+            // --- SESIÓN 1 ACTIVITIES LOGIC ---
+
+            checkCesarDilemma(isCorrect) {
+                const feedback = document.getElementById('cesar-dilemma-feedback');
+                feedback.classList.remove('hidden', 'bg-red-50', 'text-red-800', 'bg-emerald-50', 'text-emerald-800');
+
+                if (isCorrect) {
+                    feedback.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
+                    feedback.innerHTML = `<strong>¡Respuesta Correcta!</strong> Explicación: La salud es multidimensional (OMS). Aunque César no tenga heridas externas o fracturas, padece dolor lumbar (afección física) y estrés acumulado (afección mental), por lo que NO está sano al 100 %.`;
+                    state.scores.cesarDilemma = 1;
+                } else {
+                    feedback.classList.add('bg-red-50', 'text-red-800', 'border', 'border-red-200');
+                    feedback.innerHTML = `<strong>Respuesta Incorrecta.</strong> La opción correcta es la b). La salud no es solo la ausencia de lesiones visibles o huesos rotos, sino el bienestar completo físico, mental y social.`;
+                    state.scores.cesarDilemma = 0;
+                }
+                this.updateProgressBar();
+            }
+
+            renderTrianglePool() {
+                const pool = document.getElementById('triangle-pool');
+                pool.innerHTML = '';
+                APP_DATA.triangleItems.forEach(item => {
+                    const btn = document.createElement('div');
+                    btn.id = `item-${item.id}`;
+                    btn.className = 'px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 cursor-pointer shadow-sm hover:border-prl-500 transition-all flex items-center space-x-1';
+                    btn.innerHTML = `<span>${item.text}</span> <i class="fa-solid fa-plus text-[10px] text-slate-400"></i>`;
+                    btn.onclick = () => this.assignTriangleItem(item);
+                    pool.appendChild(btn);
+                });
+            }
+
+            assignTriangleItem(item) {
+                // Cycle through dimensions: physical -> mental -> social -> pool
+                const currentCat = state.triangleAssignments[item.id];
+                let nextCat = 'physical';
+                if (currentCat === 'physical') nextCat = 'mental';
+                else if (currentCat === 'mental') nextCat = 'social';
+                else if (currentCat === 'social') nextCat = null;
+
+                state.triangleAssignments[item.id] = nextCat;
+
+                // Move DOM element
+                const el = document.getElementById(`item-${item.id}`);
+                if (nextCat === null) {
+                    document.getElementById('triangle-pool').appendChild(el);
+                    el.className = 'px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 cursor-pointer shadow-sm hover:border-prl-500 transition-all flex items-center space-x-1';
+                } else {
+                    document.getElementById(`drop-${nextCat}`).appendChild(el);
+                    el.className = 'px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-800 cursor-pointer shadow-sm hover:bg-slate-100 transition-all flex items-center justify-between w-full';
+                }
+            }
+
+            resetTriangleActivity() {
+                state.triangleAssignments = {};
+                this.renderTrianglePool();
+                document.getElementById('triangle-feedback').classList.add('hidden');
+            }
+
+            checkTriangleActivity() {
+                let hits = 0;
+                APP_DATA.triangleItems.forEach(item => {
+                    if (state.triangleAssignments[item.id] === item.cat) hits++;
+                });
+
+                const feedback = document.getElementById('triangle-feedback');
+                feedback.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'bg-amber-50', 'text-amber-800');
+
+                if (hits === APP_DATA.triangleItems.length) {
+                    feedback.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
+                    feedback.innerHTML = `<strong>¡Excelente! Triángulo completado correctamente (${hits}/6 aciertos).</strong><br>Has clasificado con precisión las dimensiones de la salud según la OMS: la salud física (organismo), mental (emoción y estrés) y social (entorno y relaciones).`;
+                    state.scores.triangle = 10;
+                } else {
+                    feedback.classList.add('bg-amber-50', 'text-amber-800', 'border', 'border-amber-200');
+                    feedback.innerHTML = `<strong>Revisa tus asignaciones (${hits}/${APP_DATA.triangleItems.length} correctas).</strong><br>Recuerda: el dolor o daño orgánico pertenece a la dimensión física; el estrés y estado emocional a la mental; y el clima laboral o relaciones familiares a la social.`;
+                    state.scores.triangle = Math.round((hits / 6) * 10);
+                }
+                this.updateProgressBar();
+            }
+
+            toggleRiskCard(id) {
+                const detail = document.getElementById(`risk-card-${id}-detail`);
+                detail.classList.toggle('hidden');
+            }
+
+            renderAuditCases() {
+                const container = document.getElementById('audit-express-container');
+                container.innerHTML = '';
+
+                APP_DATA.auditCases.forEach(c => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4';
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">${c.title}</h4>
+                            <span class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold">Supuesto ${c.id}</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-700 italic bg-white p-3 rounded-xl border border-slate-200">«${c.desc}»</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Clasificación del Factor de Riesgo:</label>
+                                <select id="audit-factor-${c.id}" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white font-medium outline-none">
+                                    <option value="">-- Selecciona Factor --</option>
+                                    <option value="Condición de seguridad">Condición de seguridad</option>
+                                    <option value="Condición medioambiental">Condición medioambiental</option>
+                                    <option value="Factor ergonómico">Factor ergonómico</option>
+                                    <option value="Factor psicosocial">Factor psicosocial</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Dimensión de Salud Afectada:</label>
+                                <select id="audit-dim-${c.id}" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white font-medium outline-none">
+                                    <option value="">-- Selecciona Dimensión --</option>
+                                    <option value="Física">Física</option>
+                                    <option value="Mental">Mental</option>
+                                    <option value="Social">Social</option>
+                                    <option value="Mental y Social">Mental y Social</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="audit-feedback-${c.id}" class="hidden p-3 rounded-xl text-xs space-y-1"></div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            resetAuditExpress() {
+                APP_DATA.auditCases.forEach(c => {
+                    document.getElementById(`audit-factor-${c.id}`).value = '';
+                    document.getElementById(`audit-dim-${c.id}`).value = '';
+                    const fb = document.getElementById(`audit-feedback-${c.id}`);
+                    fb.classList.add('hidden');
+                });
+                state.scores.auditExpress = null;
+            }
+
+            checkAuditExpress() {
+                let hits = 0;
+                let total = APP_DATA.auditCases.length * 2; // Factor + Dimensión for each
+
+                APP_DATA.auditCases.forEach(c => {
+                    const userFactor = document.getElementById(`audit-factor-${c.id}`).value;
+                    const userDim = document.getElementById(`audit-dim-${c.id}`).value;
+                    const fb = document.getElementById(`audit-feedback-${c.id}`);
+
+                    let factorCorrect = (userFactor === c.correctFactor);
+                    let dimCorrect = (userDim === c.correctDim);
+
+                    if (factorCorrect) hits++;
+                    if (dimCorrect) hits++;
+
+                    fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'bg-red-50', 'text-red-900');
+                    if (factorCorrect && dimCorrect) {
+                        fb.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                        fb.innerHTML = `<strong>¡Correcto!</strong> Factor: ${c.correctFactor} | Dimensión: ${c.correctDim}.<br><em>Explicación:</em> ${c.explicacion}`;
+                    } else {
+                        fb.classList.add('bg-red-50', 'text-red-900', 'border', 'border-red-200');
+                        fb.innerHTML = `<strong>Revisión:</strong> Factor Correcto: <strong>${c.correctFactor}</strong> (Elegiste: ${userFactor || 'ninguno'}) | Dimensión Correcta: <strong>${c.correctDim}</strong> (Elegiste: ${userDim || 'ninguno'}).<br><em>¿Por qué?</em> ${c.explicacion}`;
+                    }
+                });
+
+                state.scores.auditExpress = Math.round((hits / total) * 10);
+                this.updateProgressBar();
+            }
+
+            checkMartinCase() {
+                const solution = document.getElementById('martin-case-solution');
+                solution.classList.remove('hidden');
+                solution.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                solution.innerHTML = `
+                    <p class="font-bold text-emerald-800">Solución Oficial de la Guía Didáctica:</p>
+                    <p><strong>Factor de Riesgo:</strong> Factor medioambiental (agente físico: ruido de 90 dB continuos).</p>
+                    <p><strong>Dimensiones de Salud Afectadas:</strong></p>
+                    <ul class="list-disc list-inside space-y-0.5">
+                        <li><strong>Física:</strong> Capacidad auditiva (pitidos en los oídos).</li>
+                        <li><strong>Mental:</strong> Irritabilidad y fatiga psicológica.</li>
+                        <li><strong>Social:</strong> Dificultad para comunicarse con su entorno familiar.</li>
+                    </ul>
+                `;
+                state.scores.martinCase = 10;
+            }
+
+            checkErrorS1() {
+                const selected = document.querySelector('input[name="error-s1"]:checked');
+                const fb = document.getElementById('error-s1-feedback');
+                fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'bg-red-50', 'text-red-900');
+
+                if (selected && selected.value === 'a') {
+                    fb.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                    fb.innerHTML = `<strong>¡Error Detectado Correctamente!</strong> Explicación: La salud laboral es un estado de bienestar integral (físico, mental y social), no solo la ausencia de enfermedad. Además, la prevención es proactiva (actúa ANTES del accidente, no después para sancionar).`;
+                    state.scores.errorS1 = 10;
+                } else {
+                    fb.classList.add('bg-red-50', 'text-red-900', 'border', 'border-red-200');
+                    fb.innerHTML = `<strong>Incompleto o incorrecto.</strong> El error de la afirmación estriba en reducir la salud solo a la dimensión física y en concebir la prevención como una reacción punitiva posterior en lugar de una acción previa proactiva.`;
+                    state.scores.errorS1 = 0;
+                }
+            }
+
+            renderTestS1() {
+                const container = document.getElementById('test-s1-container');
+                container.innerHTML = '';
+
+                APP_DATA.testS1.forEach((t, index) => {
+                    const block = document.createElement('div');
+                    block.className = 'space-y-3 bg-white p-4 rounded-xl border border-slate-200';
+                    block.innerHTML = `
+                        <p class="font-bold text-xs sm:text-sm text-slate-800">${t.q}</p>
+                        <div class="space-y-1.5 text-xs">
+                            ${t.options.map((opt, optIdx) => `
+                                <label class="flex items-start space-x-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                    <input type="radio" name="test-s1-q${index}" value="${optIdx}" class="mt-0.5">
+                                    <span class="text-slate-700">${opt}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                        <div id="test-s1-fb-${index}" class="hidden p-3 rounded-lg text-xs"></div>
+                    `;
+                    container.appendChild(block);
+                });
+            }
+
+            checkTestS1() {
+                let hits = 0;
+                APP_DATA.testS1.forEach((t, index) => {
+                    const selected = document.querySelector(`input[name="test-s1-q${index}"]:checked`);
+                    const fb = document.getElementById(`test-s1-fb-${index}`);
+                    fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'bg-red-50', 'text-red-900');
+
+                    if (selected && parseInt(selected.value) === t.correct) {
+                        hits++;
+                        fb.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                        fb.innerHTML = `<strong>¡Respuesta Correcta!</strong> ${t.exp}`;
+                    } else {
+                        fb.classList.add('bg-red-50', 'text-red-900', 'border', 'border-red-200');
+                        fb.innerHTML = `<strong>Respuesta Incorrecta.</strong> Respuesta correcta: ${t.options[t.correct]}.<br><em>Justificación:</em> ${t.exp}`;
+                    }
+                });
+
+                state.scores.testS1 = Math.round((hits / APP_DATA.testS1.length) * 10);
+                this.updateProgressBar();
+            }
+
+            renderExitTicketS1() {
+                const grid = document.getElementById('exit-ticket-s1-grid');
+                grid.innerHTML = '';
+
+                APP_DATA.exitTicketS1.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2';
+                    card.innerHTML = `
+                        <p class="font-bold text-white text-xs sm:text-sm">«${item.text}»</p>
+                        <select id="et-select-${item.id}" class="w-full p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold outline-none">
+                            <option value="">-- Selecciona Concepto --</option>
+                            <option value="causa">Causa (Factor de Riesgo)</option>
+                            <option value="efecto">Efecto (Daño Laboral)</option>
+                        </select>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            checkExitTicketS1() {
+                let hits = 0;
+                APP_DATA.exitTicketS1.forEach(item => {
+                    const val = document.getElementById(`et-select-${item.id}`).value;
+                    if (val === item.type) hits++;
+                });
+
+                const fb = document.getElementById('exit-ticket-s1-feedback');
+                fb.classList.remove('hidden', 'bg-emerald-400', 'bg-amber-400');
+
+                if (hits === APP_DATA.exitTicketS1.length) {
+                    fb.classList.add('bg-emerald-400');
+                    fb.innerHTML = `<strong>¡Exit Ticket Aprobado! (4/4 aciertos).</strong> Has asimilado perfectamente la ecuación preventiva: Causa (Factor de Riesgo) ≠ Efecto (Daño).`;
+                    state.scores.exitTicketS1 = 10;
+                } else {
+                    fb.classList.add('bg-amber-400');
+                    fb.innerHTML = `<strong>Revisa el Exit Ticket (${hits}/4 aciertos).</strong> Recuerda: El riesgo o condición es la CAUSA; la lesión o enfermedad es el EFECTO.`;
+                    state.scores.exitTicketS1 = Math.round((hits / 4) * 10);
+                }
+                this.updateProgressBar();
+            }
+
+            // --- SESIÓN 2 ACTIVITIES LOGIC ---
+
+            renderDilemmaS2() {
+                const container = document.getElementById('dilemma-s2-options');
+                container.innerHTML = `
+                    <label class="flex items-start space-x-2 p-3 bg-white rounded-xl border border-slate-200 hover:bg-slate-100 cursor-pointer">
+                        <input type="radio" name="dilemma-s2" value="a" class="mt-0.5">
+                        <span>a) Sí, ambos son accidentes de trabajo súbitos.</span>
+                    </label>
+                    <label class="flex items-start space-x-2 p-3 bg-white rounded-xl border border-slate-200 hover:bg-slate-100 cursor-pointer">
+                        <input type="radio" name="dilemma-s2" value="b" class="mt-0.5">
+                        <span>b) No. El Caso A es súbito/instantáneo (Accidente de Trabajo) y el Caso B es un proceso lento y paulatino por exposición continuada (Enfermedad Profesional).</span>
+                    </label>
+                `;
+            }
+
+            checkDilemmaS2() {
+                const selected = document.querySelector('input[name="dilemma-s2"]:checked');
+                const fb = document.getElementById('dilemma-s2-feedback');
+                fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'bg-red-50', 'text-red-900');
+
+                if (selected && selected.value === 'b') {
+                    fb.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                    fb.innerHTML = `<strong>¡Correcto!</strong> El Caso A es una patología específica súbita (Accidente de trabajo). El Caso B es un deterioro lento y progresivo por exposición continuada durante años (Enfermedad profesional).`;
+                    state.scores.dilemmaS2 = 10;
+                } else {
+                    fb.classList.add('bg-red-50', 'text-red-900', 'border', 'border-red-200');
+                    fb.innerHTML = `<strong>Incorrecto.</strong> La respuesta correcta es la b). Es crucial diferenciar el daño instantáneo (accidente) del daño diferido en el tiempo (enfermedad profesional).`;
+                    state.scores.dilemmaS2 = 0;
+                }
+                this.updateProgressBar();
+            }
+
+            showDamageDetail(key) {
+                const modal = document.getElementById('damage-detail-modal');
+                modal.classList.remove('hidden');
+
+                const details = {
+                    accidente: '<strong>Accidente de Trabajo:</strong> Toda lesión corporal que el trabajador sufra con ocasión o a consecuencia del trabajo ejecutado por cuenta ajena. Característica: suceso brusco, súbito e imprevisto.',
+                    enfermedad: '<strong>Enfermedad Profesional:</strong> La contraída a consecuencia del trabajo ejecutado por cuenta ajena en las actividades especificadas en el cuadro oficial (RD 1299/2006) y provocado por la acción de los elementos o sustancias indicados.',
+                    fatiga: '<strong>Fatiga Física / Mental:</strong> Disminución de la capacidad funcional del trabajador producida por el esfuerzo físico excesivo o por saturación/presión en el procesamiento de información.',
+                    estres: '<strong>Estrés Laboral:</strong> Estado que se caracteriza por altos niveles de angustia o disconfort, provocado por un desequilibrio entre las exigencias del trabajo y los recursos del empleado.',
+                    insatisfaccion: '<strong>Insatisfacción Laboral:</strong> Respuesta afectiva o actitud negativa del trabajador hacia sus tareas derivada de expectativas no cumplidas o deficiencias de organización.'
+                };
+
+                modal.innerHTML = details[key] || '';
+            }
+
+            renderTribunal() {
+                const container = document.getElementById('tribunal-container');
+                container.innerHTML = '';
+
+                APP_DATA.tribunalExpedientes.forEach(e => {
+                    const block = document.createElement('div');
+                    block.className = 'bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4';
+                    block.innerHTML = `
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">${e.title}</h4>
+                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-bold">Caso ${e.id}</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-800 italic bg-white p-3 rounded-xl border border-slate-200">«${e.desc}»</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">A. ¿Qué condición de trabajo ha fallado?</label>
+                                <input type="text" id="tribunal-cond-${e.id}" placeholder="Ej. Instalaciones, agentes, organización..." 
+                                       class="w-full p-2.5 rounded-lg border border-slate-300 bg-white font-medium outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">B. Tipo de Patología:</label>
+                                <select id="tribunal-type-${e.id}" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white font-medium outline-none">
+                                    <option value="">-- Selecciona Calificación --</option>
+                                    <option value="Accidente de trabajo">Accidente de trabajo</option>
+                                    <option value="Enfermedad profesional">Enfermedad profesional</option>
+                                    <option value="Fatiga">Fatiga física / mental</option>
+                                    <option value="Estrés">Estrés</option>
+                                    <option value="Insatisfacción laboral">Insatisfacción laboral</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1 text-xs">C. Justificación Técnica:</label>
+                            <textarea id="tribunal-just-${e.id}" rows="2" placeholder="Argumenta la causa y el carácter súbito o progresivo..." 
+                                      class="w-full p-2.5 text-xs rounded-lg border border-slate-300 bg-white outline-none"></textarea>
+                        </div>
+                        <div id="tribunal-fb-${e.id}" class="hidden p-3 rounded-xl text-xs space-y-1"></div>
+                    `;
+                    container.appendChild(block);
+                });
+            }
+
+            resetTribunal() {
+                APP_DATA.tribunalExpedientes.forEach(e => {
+                    document.getElementById(`tribunal-cond-${e.id}`).value = '';
+                    document.getElementById(`tribunal-type-${e.id}`).value = '';
+                    document.getElementById(`tribunal-just-${e.id}`).value = '';
+                    document.getElementById(`tribunal-fb-${e.id}`).classList.add('hidden');
+                });
+                state.scores.tribunal = null;
+            }
+
+            checkTribunal() {
+                let hits = 0;
+                APP_DATA.tribunalExpedientes.forEach(e => {
+                    const userType = document.getElementById(`tribunal-type-${e.id}`).value.toLowerCase();
+                    const fb = document.getElementById(`tribunal-fb-${e.id}`);
+                    fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'bg-amber-50', 'text-amber-900');
+
+                    const isMatch = userType.includes(e.correctType.toLowerCase().split(' ')[0]);
+
+                    if (isMatch) hits++;
+
+                    fb.classList.add(isMatch ? 'bg-emerald-50' : 'bg-amber-50', isMatch ? 'text-emerald-900' : 'text-amber-900', 'border', 'border-slate-200');
+                    fb.innerHTML = `
+                        <strong>Veredicto Oficial Referencia:</strong><br>
+                        ${e.refAnswer}
+                    `;
+                });
+
+                state.scores.tribunal = Math.round((hits / APP_DATA.tribunalExpedientes.length) * 10);
+                this.updateProgressBar();
+            }
+
+            checkPainterCase() {
+                const solution = document.getElementById('painter-case-solution');
+                solution.classList.remove('hidden');
+                solution.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                solution.innerHTML = `
+                    <p class="font-bold text-emerald-800">Solución Oficial de la Guía Didáctica:</p>
+                    <p>Es una <strong>Enfermedad Profesional</strong> (patología específica).</p>
+                    <p><strong>Justificación:</strong> Es un deterioro lento, progresivo e imperceptible de la salud producido por la exposición continuada durante 5 años a un agente químico (lacas/pinturas pulverizadas) tipificado en el cuadro oficial.</p>
+                `;
+                state.scores.painterCase = 10;
+            }
+
+            checkErrorS2() {
+                const selected = document.querySelector('input[name="error-s2"]:checked');
+                const fb = document.getElementById('error-s2-feedback');
+                fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'bg-red-50', 'text-red-900');
+
+                if (selected && selected.value === 'a') {
+                    fb.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                    fb.innerHTML = `<strong>¡Error Detectado Correctamente!</strong> Explicación: Los conceptos están totalmente invertidos. El Accidente de trabajo es el suceso súbito/instantáneo con lesión corporal en el trabajo, mientras que la Enfermedad profesional es el deterioro paulatino por exposición continuada.`;
+                    state.scores.errorS2 = 10;
+                } else {
+                    fb.classList.add('bg-red-50', 'text-red-900', 'border', 'border-red-200');
+                    fb.innerHTML = `<strong>Incorrecto.</strong> Revisa la frase: afirma que el accidente es un deterioro lento y la enfermedad es una lesión repentina descansando en casa.`;
+                    state.scores.errorS2 = 0;
+                }
+            }
+
+            renderTestS2() {
+                const container = document.getElementById('test-s2-container');
+                container.innerHTML = '';
+
+                APP_DATA.testS2.forEach((t, index) => {
+                    const block = document.createElement('div');
+                    block.className = 'space-y-3 bg-white p-4 rounded-xl border border-slate-200';
+                    block.innerHTML = `
+                        <p class="font-bold text-xs sm:text-sm text-slate-800">${t.q}</p>
+                        <div class="space-y-1.5 text-xs">
+                            ${t.options.map((opt, optIdx) => `
+                                <label class="flex items-start space-x-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                    <input type="radio" name="test-s2-q${index}" value="${optIdx}" class="mt-0.5">
+                                    <span class="text-slate-700">${opt}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                        <div id="test-s2-fb-${index}" class="hidden p-3 rounded-lg text-xs"></div>
+                    `;
+                    container.appendChild(block);
+                });
+            }
+
+            checkTestS2() {
+                let hits = 0;
+                APP_DATA.testS2.forEach((t, index) => {
+                    const selected = document.querySelector(`input[name="test-s2-q${index}"]:checked`);
+                    const fb = document.getElementById(`test-s2-fb-${index}`);
+                    fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'bg-red-50', 'text-red-900');
+
+                    if (selected && parseInt(selected.value) === t.correct) {
+                        hits++;
+                        fb.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                        fb.innerHTML = `<strong>¡Respuesta Correcta!</strong> ${t.exp}`;
+                    } else {
+                        fb.classList.add('bg-red-50', 'text-red-900', 'border', 'border-red-200');
+                        fb.innerHTML = `<strong>Respuesta Incorrecta.</strong> Respuesta correcta: ${t.options[t.correct]}.<br><em>Justificación:</em> ${t.exp}`;
+                    }
+                });
+
+                state.scores.testS2 = Math.round((hits / APP_DATA.testS2.length) * 10);
+                this.updateProgressBar();
+            }
+
+            // --- FINAL EVALUATION & REPORTING ENGINE ---
+
+            calculateFinalResults() {
+                const scores = state.scores;
+                let totalPoints = 0;
+                let evaluatedCount = 0;
+                let totalHits = 0;
+                let totalErrors = 0;
+
+                const breakdown = [
+                    { name: 'Dilema César & Salud OMS', session: 'Sesión 1', val: scores.cesarDilemma },
+                    { name: 'Triángulo de la Salud', session: 'Sesión 1', val: scores.triangle },
+                    { name: 'Auditoría Express Taller Náutico', session: 'Sesión 1', val: scores.auditExpress },
+                    { name: 'Test Evaluables Sesión 1', session: 'Sesión 1', val: scores.testS1 },
+                    { name: 'Exit Ticket (Causa ≠ Efecto)', session: 'Sesión 1', val: scores.exitTicketS1 },
+                    { name: 'Dilema Casos Contrapuestos', session: 'Sesión 2', val: scores.dilemmaS2 },
+                    { name: 'Tribunal Peritaje Preventivo', session: 'Sesión 2', val: scores.tribunal },
+                    { name: 'Test Evaluables Sesión 2', session: 'Sesión 2', val: scores.testS2 }
+                ];
+
+                const tbody = document.getElementById('report-table-body');
+                tbody.innerHTML = '';
+
+                breakdown.forEach(item => {
+                    const row = document.createElement('tr');
+                    let displayScore = '--';
+                    let hitsStr = '--';
+                    let errStr = '--';
+
+                    if (item.val !== null) {
+                        evaluatedCount++;
+                        totalPoints += item.val;
+                        displayScore = `${item.val} / 10`;
+                        const hits = Math.round((item.val / 10) * 4);
+                        hitsStr = `${hits}`;
+                        errStr = `${4 - hits}`;
+                        totalHits += hits;
+                        totalErrors += (4 - hits);
+                    }
+
+                    row.innerHTML = `
+                        <td class="p-3 font-medium text-slate-800">${item.name}</td>
+                        <td class="p-3 text-slate-500">${item.session}</td>
+                        <td class="p-3 text-center text-emerald-600 font-bold">${hitsStr}</td>
+                        <td class="p-3 text-center text-red-600 font-bold">${errStr}</td>
+                        <td class="p-3 text-right font-bold text-slate-900">${displayScore}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                const globalAverage = evaluatedCount > 0 ? (totalPoints / evaluatedCount).toFixed(1) : '0.0';
+                document.getElementById('report-global-score').innerText = globalAverage;
+                document.getElementById('report-total-hits').innerText = totalHits;
+                document.getElementById('report-total-errors').innerText = totalErrors;
+
+                const statusBadge = document.getElementById('report-status-badge');
+                if (evaluatedCount >= 6) {
+                    statusBadge.innerText = 'Completado';
+                    statusBadge.className = 'font-bold text-emerald-400';
+                } else {
+                    statusBadge.innerText = 'En Curso';
+                    statusBadge.className = 'font-bold text-amber-400';
+                }
+            }
+
+            sendResultsByEmail() {
+                const name = state.studentName || 'Alumno no identificado';
+                const score = document.getElementById('report-global-score').innerText;
+                const date = document.getElementById('report-date').innerText;
+
+                const subject = `UD2 PRL – Resultados – ${name}`;
+                const body = `INFORME DE EVALUACIÓN DE PREVENCIÓN DE RIESGOS LABORALES (UD2)
+----------------------------------------------------------------------
+Alumno/a: ${name}
+Módulo: Itinerario Personal para la Empleabilidad I (IPE 1)
+Fecha de realización: ${date}
+
+RESUMEN DE CALIFICACIÓN:
+- Calificación Global: ${score} / 10
+- Sesión 1 (Salud Integral y Riesgos): Completada
+- Sesión 2 (Condiciones y Daños Laborales): Completada
+
+DETALLE DE ACTIVIDADES COMPLETADAS:
+1. Dilema Inicial César: ${state.scores.cesarDilemma !== null ? state.scores.cesarDilemma + '/10' : 'Pendiente'}
+2. Triángulo de la Salud OMS: ${state.scores.triangle !== null ? state.scores.triangle + '/10' : 'Pendiente'}
+3. Auditoría Express Náutica: ${state.scores.auditExpress !== null ? state.scores.auditExpress + '/10' : 'Pendiente'}
+4. Test Formativo Sesión 1: ${state.scores.testS1 !== null ? state.scores.testS1 + '/10' : 'Pendiente'}
+5. Exit Ticket Causa ≠ Efecto: ${state.scores.exitTicketS1 !== null ? state.scores.exitTicketS1 + '/10' : 'Pendiente'}
+6. Tribunal Peritaje Preventivo: ${state.scores.tribunal !== null ? state.scores.tribunal + '/10' : 'Pendiente'}
+7. Test Formativo Sesión 2: ${state.scores.testS2 !== null ? state.scores.testS2 + '/10' : 'Pendiente'}
+
+----------------------------------------------------------------------
+Enviado desde la Aplicación Web Interactiva UD2 PRL.`;
+
+                const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.location.href = mailtoUrl;
+            }
+        }
+
+        // Initialize App on DOM Load
+        let app;
+        window.addEventListener('DOMContentLoaded', () => {
+            app = new PRLApp();
+        });
+    </script>
+</body>
+</html>
